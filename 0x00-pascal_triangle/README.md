@@ -1,0 +1,1 @@
+mor on Pascal triangle
