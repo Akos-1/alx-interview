@@ -39,6 +39,3 @@ def minOperations(n):
 
 
 if __name__ == "__main__":
-    # Example usage:
-    n = 9
-    print(minOperations(n))  # Output: 6
