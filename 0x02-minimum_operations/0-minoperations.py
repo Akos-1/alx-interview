@@ -32,7 +32,7 @@ def minOperations(n):
 
     for i in range(2, int(n**0.5) + 1):
         if n % i == 0:
-            operations = min(operations, i + n // i - 2)
+            operations = min(operations, i + minOperations(n // i))
 
     return operations
 
@@ -40,4 +40,4 @@ def minOperations(n):
 if __name__ == "__main__":
     # Example usage:
     n = 9
-    print(minOperations(n))  # Output: 6
+    print("Number of operations for", n, "characters:", minOperations(n))
