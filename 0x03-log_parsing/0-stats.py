@@ -6,7 +6,11 @@ import sys
 
 def compute_metrics():
     total_size = 0
-    status_count = {code: 0 for code in [200, 301, 400, 401, 403, 404, 405, 500]}
+    status_count = {
+        code: 0
+        for code in [200, 301, 400, 401, 403, 404, 405, 500]
+    }
+
     line_count = 0
 
     try:
@@ -15,7 +19,10 @@ def compute_metrics():
             if line_count % 10 == 0:
                 print_statistics(total_size, status_count)
                 total_size = 0
-                status_count = {code: 0 for code in [200, 301, 400, 401, 403, 404, 405, 500]}
+                status_count = {
+                    code: 0
+                    for code in [200, 301, 400, 401, 403, 404, 405, 500]
+                }
 
             try:
                 parts = line.split()
