@@ -1,50 +1,56 @@
 #!/usr/bin/python3
-"""a script that reads stdin line by line and computes metrics"""
 
 import sys
+import signal
+
+# Dictionary to store status code counts
+status_counts = {
+    200: 0,
+    301: 0,
+    400: 0,
+    401: 0,
+    403: 0,
+    404: 0,
+    405: 0,
+    500: 0
+}
+
+total_file_size = 0
+line_count = 0
 
 
-def compute_metrics():
-    total_size = 0
-    status_count = {
-        code: 0
-        for code in [200, 301, 400, 401, 403, 404, 405, 500]
-    }
-
-    line_count = 0
-
-    try:
-        for line in sys.stdin:
-            line_count += 1
-            if line_count % 10 == 0:
-                print_statistics(total_size, status_count)
-                total_size = 0
-                status_count = {
-                    code: 0
-                    for code in [200, 301, 400, 401, 403, 404, 405, 500]
-                }
-
-            try:
-                parts = line.split()
-                file_size = int(parts[-1])
-                status_code = int(parts[-2])
-                total_size += file_size
-                if status_code in status_count:
-                    status_count[status_code] += 1
-            except (IndexError, ValueError):
-                continue
-
-    except KeyboardInterrupt:
-        print_statistics(total_size, status_count)
-
-
-def print_statistics(total_size, status_count):
-    print(f"Total file size: {total_size}")
-    for status_code in sorted(status_count.keys()):
-        count = status_count[status_code]
+def print_statistics():
+    global total_file_size, line_count
+    print(f"Total file size: {total_file_size}")
+    for status_code, count in sorted(status_counts.items()):
         if count > 0:
             print(f"{status_code}: {count}")
+    print()
 
 
-if __name__ == "__main__":
-    compute_metrics()
+def handle_interrupt(sig, frame):
+    print("\nKeyboard interrupt detected. Printing statistics:")
+    print_statistics()
+    sys.exit(0)
+
+
+# Register the signal handler for SIGINT (Ctrl+C)
+signal.signal(signal.SIGINT, handle_interrupt)
+
+for line in sys.stdin:
+    line = line.strip()
+    parts = line.split()
+    if len(parts) != 7:
+        continue
+    try:
+        status_code = int(parts[3])
+        file_size = int(parts[6])
+    except ValueError:
+        continue
+
+    total_file_size += file_size
+    status_counts[status_code] += 1
+    line_count += 1
+
+    if line_count % 10 == 0:
+        print_statistics()
