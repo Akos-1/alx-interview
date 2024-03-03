@@ -16,7 +16,7 @@ def print_statistics(status_codes, total_file_size):
     print("File size: {}".format(total_file_size))
     for key, count in sorted(staus_codes.items()):
         if count != 0:
-            print("{}: {}".format(code, count))
+            print("{}: {}".format(key, count))
 
 
 total_file_size = 0
