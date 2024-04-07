@@ -1,26 +1,17 @@
 #!/usr/bin/node
 
-const fetch = require('node-fetch');
+const request = require('request');
 
-async function getMovieCharacters(movieId) {
-    const url = `https://swapi.dev/api/films/${movieId}/`;
-
-    try {
-        const response = await fetch(url);
-        const movieData = await response.json();
-        const characterUrls = movieData.characters;
-
-        const characterNames = await Promise.all(
-            characterUrls.map(async (characterUrl) => {
-                const characterResponse = await fetch(characterUrl);
-                const characterData = await characterResponse.json();
-                return characterData.name;
-            })
-        );
-
-        return characterNames;
-    } catch (error) {
-        console.error(`Error fetching data from API: ${error}`);
-        return null;
-    }
-}
+request('https://swapi-api.hbtn.io/api/films/' + process.argv[2], function (err, res, body) {
+  if (err) throw err;
+  const actors = JSON.parse(body).characters;
+  exactOrder(actors, 0);
+});
+const exactOrder = (actors, x) => {
+  if (x === actors.length) return;
+  request(actors[x], function (err, res, body) {
+    if (err) throw err;
+    console.log(JSON.parse(body).name);
+    exactOrder(actors, x + 1);
+  });
+};
