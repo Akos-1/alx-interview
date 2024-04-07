@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """a pile of coins of different values"""
 
+
 def makeChange(coins, total):
     if total <= 0:
         return 0
