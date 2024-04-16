@@ -1,59 +1,43 @@
 #!/usr/bin/python3
+"""The Prime Game"""
 
 
-def is_prime(num):
-    if num < 2:
-        return False
-    for i in range(2, int(num**0.5) + 1):
-        if num % i == 0:
-            return False
-    return True
-
-
-def simulate_game(n):
-    primes = [i for i in range(2, n + 1) if is_prime(i)]
-    remaining = set(range(1, n + 1))
-    maria_turn = True
-
-    while True:
-        if maria_turn:
-            possible_moves = [p for p in primes if p in remaining]
-            if not possible_moves:
-                return "Ben"
-            for p in possible_moves:
-                for i in range(p, n + 1, p):
-                    remaining.discard(i)
-            maria_turn = False
-        else:
-            possible_moves = [p for p in range(2, n + 1) if p in remaining and is_prime(p)]
-            if not possible_moves:
-                return "Maria"
-            for p in possible_moves:
-                for i in range(p, n + 1, p):
-                    remaining.discard(i)
-            maria_turn = True
+def primeNumbers(n):
+    """Return list of prime numbers
+       Args:
+        n (int): upper boundary of range.
+        where lower boundary is always 1
+    """
+    primeNos = []
+    filtered = [True] * (n + 1)
+    for prime in range(2, n + 1):
+        if (filtered[prime]):
+            primeNos.append(prime)
+            for i in range(prime, n + 1, prime):
+                filtered[i] = False
+    return primeNos
 
 
 def isWinner(x, nums):
-    maria_wins = 0
-    ben_wins = 0
-
-    for n in nums:
-        winner = simulate_game(n)
-        if winner == "Maria":
-            maria_wins += 1
-        elif winner == "Ben":
-            ben_wins += 1
-
-    if maria_wins > ben_wins:
-        return "Maria"
-    elif maria_wins < ben_wins:
-        return "Ben"
-    else:
+    """
+    Determines who wins the Prime Game
+    Args:
+        x (int): number of rounds of game
+        nums (int): upper limit of range for each round
+    Return:
+        Name of winner (either Maria or Ben) or None if winner isn't  found
+    """
+    if x is None or nums is None or x == 0 or nums == []:
         return None
-
-
-if __name__ == "__main__":
-    x = 3
-    nums = [4, 5, 1]
-    print(isWinner(x, nums))  # Output: Ben
+    Maria = Ben = 0
+    for i in range(x):
+        primeNos = primeNumbers(nums[i])
+        if len(primeNos) % 2 == 0:
+            Ben += 1
+        else:
+            Maria += 1
+    if Maria > Ben:
+        return 'Maria'
+    elif Ben > Maria:
+        return 'Ben'
+    return None
