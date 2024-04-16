@@ -25,9 +25,7 @@ def simulate_game(n):
                     remaining.discard(i)
             maria_turn = False
         else:
-            possible_moves = [
-                p for p in range(2, n + 1) if p in remaining and is_prime(p)
-            ]
+            possible_moves = [p for p in range(2, n + 1) if p in remaining and is_prime(p)]
             if not possible_moves:
                 return "Maria"
             for p in possible_moves:
